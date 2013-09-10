@@ -10,12 +10,11 @@ forum.basicModel = {
      * @access public
      * @return null
      */
-    implement : function(data) 
-    {
-        for(var i in data) {
+    implement : function (data) {
+        for (var i in data) {
             this[i] = (i != 'date') 
-            ? data[i] 
-            : this.formatedDate(data[i],'MMM d, yyyy h:mm a');
+                ? data[i]
+                : this.formatedDate(data[i],'MMM d, yyyy h:mm a');
         } 
     },
     /*
@@ -25,9 +24,8 @@ forum.basicModel = {
      * @access public
      * @return string
      */
-    formatedDate : function(date, pattern) 
-    {
-        return $.format.date(date, pattern)
+    formatedDate : function (date, pattern) {
+        return $.format.date(date, pattern);
     },
     /*
      * Remote calls
@@ -35,21 +33,20 @@ forum.basicModel = {
      * @access public
      * @return null
      */
-    sync : function(_data) 
-    {
-        var endpoint = "<your end point url>";
-        var data = {
+    sync : function (data) {
+        var endpoint = "/"; // your end point url
+        var defaultData = {
             url : '',
             params: {},
             success: function(){},
             error: function(){},
             complete: function(){}
         }
-        $.extend(true, data, _data);
-        $.post(endpoint + data.url, data.params)
-        .success(data.success)
-        .error(data.error)
-        .complete(data.complete);
+        $.extend(true, defaultData, data);
+        $.post(endpoint + defaultData.url, defaultData.params)
+            .success(defaultData.success)
+            .error(defaultData.error)
+            .complete(defaultData.complete);
     },
     /*
      * Handles errors
@@ -58,8 +55,8 @@ forum.basicModel = {
      * @access public
      * @return null
      */
-    handleError : function(description, err) {
-        console.warn(description, err)
+    handleError : function (description, err) {
+        console.warn(description, err);
     }
 }
 
@@ -69,8 +66,7 @@ forum.basicModel = {
 * @access public
 * @return null
 */
-forum.messageViewModel = function(data) 
-{
+forum.messageViewModel = function (data) {
     // Model can be extended
     this.implement(data);
 }
@@ -82,8 +78,7 @@ forum.messageViewModel.prototype = forum.basicModel;
 * @access public
 * @return null
 */
-forum.threadViewModel = function(data) 
-{    
+forum.threadViewModel = function (data) {
     var self = this;   
     this.implement(data);      
     this.messages = ko.observableArray();    
@@ -96,8 +91,7 @@ forum.threadViewModel = function(data)
     * @access public
     * @return null
     */
-    this.expandMessages = function()
-    {
+    this.expandMessages = function () {
         self.messagesExpanded(!self.messagesExpanded());
     }    
     /*
@@ -105,11 +99,10 @@ forum.threadViewModel = function(data)
     * @access public
     * @return null
     */
-    this.expandThread = function() 
-    {
+    this.expandThread = function () {
         self.threadExpanded(!self.threadExpanded());
-        if (!self.threadExpanded()){
-            self.messagesExpanded(self.threadExpanded())
+        if (!self.threadExpanded()) {
+            self.messagesExpanded(self.threadExpanded());
         }            
     }
     /*
@@ -117,46 +110,44 @@ forum.threadViewModel = function(data)
     * @access private
     * @return null
     */
-    var setCurrentTime = function() 
-    {
+    var setCurrentTime = function () {
         var time1 = self.formatedDate(new Date().getTime(),'MMM d');
         var time2 = self.formatedDate(new Date().getTime(),'h:mm a');
         self.currentTime(time1 + ' at ' + time2);
     }
-    setInterval(setCurrentTime,1000)
+    setInterval(setCurrentTime,1000); // TODO: avoid this
     /*
     * Posts a message to the thread
     * @param form, object
     * @access public
     * @return null
     */
-    this.postMessage = function(form)
-    {
+    this.postMessage = function (form) {
         var params = {
             author: self.author,
             threadid: self.id,
             message: $('[name="message"]',form).val()
-        }
+        };
         $('button',form).attr('disabled','disabled');
         self.sync({
             url: "/post/create",
             params: params,
-            success: function(data) {
+            success: function (data) {
                 if (typeof data != 'object') {                    
-                    data = JSON.parse(data)
+                    data = JSON.parse(data);
                 }
                 if (data.status == 'ok') {
-                    self.messages.push(new forum.messageViewModel(data))
+                    self.messages.push(new forum.messageViewModel(data));
                     $('[name="message"]',form).val('');
                 } else {
-                    self.handleError('Post create:', data) 
+                    self.handleError('Post create:', data);
                 }
             },
-            error: function(err) {
-                self.handleError('Post create:', err)
+            error: function (err) {
+                self.handleError('Post create:', err);
             },
-            complete: function() {
-                $('button',form).removeAttr('disabled')
+            complete: function () {
+                $('button',form).removeAttr('disabled');
             }        
         })
     }     
@@ -168,8 +159,7 @@ forum.threadViewModel.prototype = forum.basicModel;
 * @access public
 * @return null
 */
-forum.appViewModel = function() 
-{
+forum.appViewModel = function () {
     var self = this;
     this.threads = ko.observableArray();
     
@@ -179,41 +169,40 @@ forum.appViewModel = function()
     * @access public
     * @return null
     */
-    this.postThread = function(form) 
-    {
+    this.postThread = function (form) {
         var params = {
             author: $('[name="author"]',form).val(),
             message: $('[name="message"]',form).val()
-        }
+        };
         $('button',form).attr('disabled','disabled');
         self.sync({
             url: "/thread/create",
             params: params,
-            success: function(data) {
+            success: function (data) {
                 if (typeof data != 'object') {                    
-                    data = JSON.parse(data)
+                    data = JSON.parse(data);
                 }
                 if (data.status == 'ok') {
-                    self.threads.unshift(new forum.threadViewModel(data))
-                    $('[name="message"]',form).val('')
-                    $('[name="author"]',form).val('')
+                    self.threads.unshift(new forum.threadViewModel(data));
+                    $('[name="message"]',form).val('');
+                    $('[name="author"]',form).val('');
                 } else {
-                    self.handleError('Thread create:', data)
+                    self.handleError('Thread create:', data);
                 }              
             },
-            error: function(err) {
-                self.handleError('Thread create:', err)
+            error: function (err) {
+                self.handleError('Thread create:', err);
             },
-            complete: function() {
-                $('button',form).removeAttr('disabled')
+            complete: function () {
+                $('button',form).removeAttr('disabled');
             }
         })            
     }
 }
 forum.appViewModel.prototype = forum.basicModel;
  
-$(function(){
+$(function () {
     ko.applyBindings(new forum.appViewModel, $("#simple-forum")[0]);
-})
+});
 
 
