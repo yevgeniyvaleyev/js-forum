@@ -55,9 +55,10 @@ forum.basicModel = {
     sync : function (data) {
 
         // dummy responses
+        // delete it if you have real end point
         emulateServerResponse(data);
         return;
-
+        //
 
         var endpoint = "/"; // your end point url
         var defaultData = {
