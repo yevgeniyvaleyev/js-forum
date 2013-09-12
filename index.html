@@ -1,72 +1,109 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Simple Forum</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link type="text/css" rel="stylesheet" href="css/styles.css"/>        
-    </head>
-    <body>
-        <div id="simple-forum">
-            <form data-bind="submit: postThread" id="post-thread">
-                <h1>Create Thread</h1>
-                <input name="author" placeholder="Author name" type="text" required />
-                <textarea name="message" placeholder="Thread message" required></textarea>
-                <button type="submit">Done</button>
-                <button type="reset">Cancel</button>                    
-            </form>
-            <div data-bind="foreach: threads">
-                <div class="thread" data-bind="css: {threadExpanded: threadExpanded, messagesExpanded: messagesExpanded}">
-                    <div class="header info">
-                        <p>Here should be some text</p>
-                        <p>Here should be some text</p>
-                    </div>
-                    <div class="participants">
-                        <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
-                        <p>Here should be some text</p>
-                    </div>
-                    <div class="mother-post">
-                        <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
-                        <h2 data-bind="text: author"></h2>
-                        <h3 data-bind="text: header"></h3>
-                        <p data-bind="text: message"></p>
-                        <time data-bind="text: 'Date: ' + date, attr: {datetime: date}"></time>                        
-                        <a href="#" class="expander" data-bind="click: expandThread, text: !!threadExpanded() ? 'collapse' : 'expand'"></a>               
-                    </div>
-                    <div class="service-info">Here should be some text,
-                        <a href="#" data-bind="click: expandMessages, text: (!!messagesExpanded() ? 'hide' : 'show') + ' messages'"></a>
-                    </div>
-                    <div class="messages-box" data-bind="foreach: messages">
-                        <div class="post">
-                            <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
-                            <h2 data-bind="text: author"></h2>
-                            <p data-bind="text: message"></p>
-                            <time data-bind="text: 'Date: ' + date, attr: {datetime: date}"></time>                   
-                        </div>
-                    </div>
-                    <div class="post reply">
-                        <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
-                        <h2 data-bind="text: author"></h2>
-                        <form data-bind="submit: postMessage">
-                            <textarea name="message" required></textarea>
-                            <button type="submit">Done</button>
-                            <button type="reset">Cancel</button>
-                            <time data-bind="text: 'Current Time: ' + currentTime(), attr: {datetime: currentTime}"></time>
-                            <span class="custom-checkbox">
-                                <input type="checkbox" name="keep_updated" data-bind="attr: {id: 'keep-updated-' + id }"/>
-                                <label data-bind="attr: {for: 'keep-updated-' + id }"><span>Keep me updated with this thread</span></label>                            
-                            </span>
-                        </form>
-                    </div>
-                    <div class="footer info">
-                        <p>Here should be some text</p>
-                        <p>Here should be some text</p>
-                    </div>
-                </div>
-            </div>
+<head>
+    <title>Simple Forum</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link type="text/css" rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+<div id="simple-forum">
+    <!-- ko template: { name: 'createThreadTemplate'} --><!-- /ko -->
+    <!-- ko template: { name: 'threadTemplate'} --><!-- /ko -->
+</div>
+
+<script type="text/html" id="createThreadTemplate">
+    <form data-bind="submit: postThread" id="post-thread">
+        <h1>Create Thread</h1>
+        <input name="author" placeholder="Author name" type="text" required />
+        <textarea name="message" placeholder="Thread message" required></textarea>
+        <button type="submit">Done</button>
+        <button type="reset">Cancel</button>
+    </form>
+</script>
+
+<script type="text/html" id="threadTemplate">
+    <div data-bind="foreach: threads">
+        <div class="thread" data-bind="css: {threadExpanded: threadExpanded, messagesExpanded: messagesExpanded}">
+            <!-- ko template: { name: 'headerTemplate'} --><!-- /ko -->
+            <!-- ko template: { name: 'participantsTemplate'} --><!-- /ko -->
+            <!-- ko template: { name: 'motherPostTemplate'} --><!-- /ko -->
+            <!-- ko template: { name: 'serviceInfoTemplate'} --><!-- /ko -->
+            <!-- ko template: { name: 'messageTemplate'} --><!-- /ko -->
+            <!-- ko template: { name: 'replyTemplate'} --><!-- /ko -->
+            <!-- ko template: { name: 'footerTemplate'} --><!-- /ko -->
         </div>
-        <script src="js/libs/jquery-1.7.1.min.js"></script>
-        <script src="js/libs/jquery.dateFormat-1.0.js"></script>
-        <script src="js/libs/knockout-2.1.0.js"></script>
-        <script src="js/forum.js"></script>
-    </body>
+    </div>
+</script>
+
+<script type="text/html" id="serviceInfoTemplate">
+    <div class="service-info">Here should be some text,
+        <a href="#" data-bind="click: expandMessages, text: (!!messagesExpanded() ? 'hide' : 'show') + ' messages'"></a>
+    </div>
+</script>
+
+<script type="text/html" id="participantsTemplate">
+    <div class="participants">
+        <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
+        <p>Here should be some text</p>
+    </div>
+</script>
+
+<script type="text/html" id="messageTemplate">
+    <div class="messages-box" data-bind="foreach: messages">
+        <div class="post">
+            <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
+            <h2 data-bind="text: author"></h2>
+            <p data-bind="text: message"></p>
+            <time data-bind="text: 'Date: ' + date, attr: {datetime: date}"></time>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="motherPostTemplate">
+    <div class="mother-post">
+        <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
+        <h2 data-bind="text: author"></h2>
+        <h3 data-bind="text: header"></h3>
+        <p data-bind="text: message"></p>
+        <time data-bind="text: 'Date: ' + date, attr: {datetime: date}"></time>
+        <a href="#" class="expander" data-bind="click: expandThread, text: !!threadExpanded() ? 'collapse' : 'expand'"></a>
+    </div>
+</script>
+
+<script type="text/html" id="footerTemplate">
+    <div class="footer info">
+        <p>Here should be some text</p>
+        <p>Here should be some text</p>
+    </div>
+</script>
+
+<script type="text/html" id="headerTemplate">
+    <div class="header info">
+        <p>Here should be some text</p>
+        <p>Here should be some text</p>
+    </div>
+</script>
+
+<script type="text/html" id="replyTemplate">
+    <div class="post reply">
+        <img class="avatar" src="images/avatar_square_sample.jpg" alt="" />
+        <h2 data-bind="text: author"></h2>
+        <form data-bind="submit: postMessage">
+            <textarea name="message" required></textarea>
+            <button type="submit">Done</button>
+            <button type="reset">Cancel</button>
+            <time data-bind="text: 'Current Time: ' + currentTime(), attr: {datetime: currentTime}"></time>
+            <span class="custom-checkbox">
+            <input type="checkbox" name="keep_updated" data-bind="attr: {id: 'keep-updated-' + id }"/>
+            <label data-bind="attr: {for: 'keep-updated-' + id }"><span>Keep me updated with this thread</span></label>
+            </span>
+        </form>
+    </div>
+</script>
+
+<script src="js/libs/jquery-1.7.1.min.js"></script>
+<script src="js/libs/jquery.dateFormat-1.0.js"></script>
+<script src="js/libs/knockout-2.1.0.js"></script>
+<script src="js/forum.js"></script>
+</body>
 </html>
