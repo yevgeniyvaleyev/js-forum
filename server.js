@@ -20,7 +20,7 @@ var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
 
-router.use(express.static(path.resolve(__dirname)));
+router.use(express.static(path.resolve(__dirname, 'client')));
 var messages = [];
 var sockets = [];
 
