@@ -1,4 +1,12 @@
 {
-    "name": "yvaleyev-js-forum",
-    "version": "0.0.1"
+  "name": "yvaleyev-js-forum",
+  "version": "0.0.0",
+  "description": "static chat",
+  "main": "server.js",
+  "repository": "",
+  "author": "Yevgeniy Valeyev",
+  "dependencies": {
+    "async": "~0.2.8",
+    "express": "~3.2.4"
+  }
 }
