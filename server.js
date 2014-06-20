@@ -18,10 +18,10 @@ var express = require('express');
 //
 var router = express();
 var server = http.createServer(router);
-/*var io = socketio.listen(server);
+/*var io = socketio.listen(server);*/
 
-router.use(express.static(path.resolve(__dirname, 'client')));
-var messages = [];
+router.use(express.static(path.resolve(__dirname, '')));
+/*var messages = [];
 var sockets = [];*/
 
 
